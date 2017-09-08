@@ -1,0 +1,50 @@
+-- SUMMARY --
+
+This is a README file for PageRank program. PageRankDriver program includes main and run methods. It includes 4 jobs run sequentially in order to compute the page rank. First job is used to count the total number of pages
+ in the document and the Second job is used to parse links and create a link graph from the Wikipedia pages, the next job calculates the page ranks iteratively from the existing page rank values, and the final job sanitizes, 
+ sorts according to the page rank values and outputs the Page rank values of the top 100 pages in the wiki document and saves the results to the output location in HDFS.
+
+-- REQUIREMENTS --
+
+HADOOP Environment or Cloudera VM.
+
+
+-- Running the program --
+
+* Before you run the sample, you must create input and output locations in HDFS. Use the following commands to create the input directory /user/cloudera/pagerank/input in HDFS:
+$ sudo su hdfs
+$ hadoop fs -mkdir /user/cloudera
+$ hadoop fs -chown cloudera /user/cloudera
+$ exit
+$ sudo su cloudera
+$ hadoop fs -mkdir /user/cloudera/pagerank /user/cloudera/pagerank/input 
+
+* Move the text files of the Wikipedia corpus provided to use as input, and move them to the/user/cloudera/pagerank/input directory in HDFS. 
+
+$ hadoop fs -put wiki* /user/cloudera/pagerank/input 
+
+* Compile the PageRankDriver class.
+To compile in a package installation of CDH:
+
+$ mkdir -p build
+$ javac -cp /usr/lib/hadoop/*:/usr/lib/hadoop-mapreduce/*:. PageRankDriver.java -d build -Xlint 
+
+* Create a JAR file for the PageRankDriver application.
+$ jar -cvf PageRankDriver.jar -C build/ . 
+
+* Run the PageRankDriver application from the JAR file, by passing the paths to the input for Creating the link graph, the output path of documents count, the output path of Link Graph and the output path of page rank computation.
+$ hadoop jar pagerank.jar PageRankDriver /user/cloudera/pagerank/input /user/cloudera/pagerank/output/count /user/cloudera/pagerank/output/linkGraph /user/cloudera/pagerank/output/pageRankOutput
+
+* Output can be seen using the below command:
+$ hadoop fs -cat /user/cloudera/pagerank/output/pageRankOutput/*
+
+* If you want to run the sample again, you first need to remove the output directory. Use the following command.
+$ hadoop fs -rm -r /user/cloudera/pagerank/output/pageRankOutput 
+
+* If you want to copy the output to your local machine. Use the following command.
+$ hadoop fs -copyToLocal /user/cloudera/pagerank/output/pageRankOutput/* 
+
+-- CONTACT --
+
+* AJINKYA MOHAPATRA (amohapa1@uncc.edu)
+
